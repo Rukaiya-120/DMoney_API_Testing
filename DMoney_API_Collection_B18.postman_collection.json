@@ -1,0 +1,2741 @@
+{
+  "info": {
+    "_postman_id": "74f18637-e250-45ec-88e4-723f16931ec7",
+    "name": "DMoney_API_Collection_B18",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "48040404",
+    "_collection_link": "https://go.postman.co/collection/48040404-74f18637-e250-45ec-88e4-723f16931ec7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Admin Login",
+      "item": [
+        {
+          "name": "Admin",
+          "item": [
+            {
+              "name": "admin_login",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "let jsonData = pm.response.json();\r",
+                      "let token = jsonData.token;\r",
+                      "pm.collectionVariables.set( \"adminToken\" , token );"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"admin@dmoney.com\",\r\n  \"password\": \"1234\"\r\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/user/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "User Creation",
+          "item": [
+            {
+              "name": "Customer1_Creation",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "var ramdomId = _.random( 1000000,9999999  );\r",
+                      "\r",
+                      "var phoneNumber = \"0160\" + ramdomId;\r",
+                      "\r",
+                      "var url = \"http://localhost:8081\";\r",
+                      "var key = \"ROADTOSDET\";\r",
+                      "\r",
+                      "pm.collectionVariables.set( \"baseUrl\" , url  );\r",
+                      "pm.collectionVariables.set(\"secretKey\" , key);\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"randomId\" , ramdomId );\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"randomPhoneNumber\" , phoneNumber);\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();\r",
+                      "\r",
+                      "\r",
+                      "// Positive Test Cases\r",
+                      "\r",
+                      "pm.test(\"Status code is 201\", function () {\r",
+                      "    pm.response.to.have.status(201);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Customer created successfully\", function () {\r",
+                      "    pm.expect(jsonData.message).to.contains(\"User created\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response body is not empty\", function () {\r",
+                      "    pm.expect(pm.response.text()).not.to.be.empty;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response time less than 3000ms\", function () {\r",
+                      "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"User object exists\", function () {\r",
+                      "    pm.expect(jsonData.user).to.exist;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"User ID exists\", function () {\r",
+                      "    pm.expect(jsonData.user.id).to.not.be.null;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Email matches request\", function () {\r",
+                      "    pm.expect(jsonData.user.email)\r",
+                      "      .to.eql(\"rukaiyahaque1229@gmail.com\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Phone number exists\", function () {\r",
+                      "    pm.expect(jsonData.user.phone_number).to.not.be.empty;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Role is Customer\", function () {\r",
+                      "    pm.expect(jsonData.user.role)\r",
+                      "      .to.eql(\"Customer\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Content-Type is JSON\", function () {\r",
+                      "    pm.expect(\r",
+                      "        pm.response.headers.get(\"Content-Type\")\r",
+                      "    ).to.include(\"application/json\");\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "// Negative Test Cases\r",
+                      "\r",
+                      "pm.test(\"User should not have empty ID\", function () {\r",
+                      "    pm.expect(jsonData.user.id).to.not.eql(\"\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Email should not be null\", function () {\r",
+                      "    pm.expect(jsonData.user.email).to.not.be.null;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Phone number should not be null\", function () {\r",
+                      "    pm.expect(jsonData.user.phone_number)\r",
+                      "        .to.not.be.null;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Message should not contain error\", function () {\r",
+                      "    pm.expect(jsonData.message.toLowerCase())\r",
+                      "        .to.not.include(\"error\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Status should not be 400\", function () {\r",
+                      "    pm.expect(pm.response.code).to.not.eql(400);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Status should not be 500\", function () {\r",
+                      "    pm.expect(pm.response.code).to.not.eql(500);\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "// Save variables for next APIs\r",
+                      "\r",
+                      "if(jsonData.user){\r",
+                      "\r",
+                      "    pm.collectionVariables.set(\r",
+                      "        \"customer1_Id\",\r",
+                      "        jsonData.user.id\r",
+                      "    );\r",
+                      "\r",
+                      "    pm.collectionVariables.set(\r",
+                      "        \"customer1_Email\",\r",
+                      "        jsonData.user.email\r",
+                      "    );\r",
+                      "\r",
+                      "    pm.collectionVariables.set(\r",
+                      "        \"customer1_PhoneNumber\",\r",
+                      "        jsonData.user.phone_number\r",
+                      "    );\r",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-AUTH-SECRET-KEY",
+                    "value": "{{secretKey}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Test Shanti\",\r\n  \"email\": \"cust12{{randomId}}@gmail.com\",\r\n  \"password\": \"1234\",\r\n  \"phone_number\":\"{{randomPhoneNumber}}\",\r\n  \"nid\": \"{{randomId}}\",\r\n  \"role\": \"Customer\"\r\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/user/create",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Customer2_creation",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "var randomId2 = _.random( 1000000,9999999  );",
+                      "",
+                      "var phoneNumber2 = \"0150\" + randomId2;",
+                      "",
+                      "var url = \"http://localhost:8081\";",
+                      "var key = \"ROADTOSDET\";",
+                      "",
+                      "pm.collectionVariables.set( \"baseUrl\" , url  );",
+                      "pm.collectionVariables.set(\"secretKey\" , key);",
+                      "",
+                      "pm.collectionVariables.set(\"randomId2\" , randomId2 );",
+                      "",
+                      "pm.collectionVariables.set(\"phoneNumber2\" , phoneNumber2);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();\r",
+                      "\r",
+                      "\r",
+                      "// Positive Test Cases\r",
+                      "\r",
+                      "pm.test(\"Status code is 201\", function () {\r",
+                      "    pm.response.to.have.status(201);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Customer created successfully\", function () {\r",
+                      "    pm.expect(jsonData.message).to.contains(\"User created\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response body is not empty\", function () {\r",
+                      "    pm.expect(pm.response.text()).not.to.be.empty;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response time less than 3000ms\", function () {\r",
+                      "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"User object exists\", function () {\r",
+                      "    pm.expect(jsonData.user).to.exist;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"User ID exists\", function () {\r",
+                      "    pm.expect(jsonData.user.id).to.not.be.null;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Email matches request\", function () {\r",
+                      "    pm.expect(jsonData.user.email)\r",
+                      "      .to.eql(\"rukaiyahaque1229@gmail.com\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Phone number exists\", function () {\r",
+                      "    pm.expect(jsonData.user.phone_number).to.not.be.empty;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Role is Customer\", function () {\r",
+                      "    pm.expect(jsonData.user.role)\r",
+                      "      .to.eql(\"Customer\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Content-Type is JSON\", function () {\r",
+                      "    pm.expect(\r",
+                      "        pm.response.headers.get(\"Content-Type\")\r",
+                      "    ).to.include(\"application/json\");\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "// Negative Test Cases\r",
+                      "\r",
+                      "pm.test(\"User should not have empty ID\", function () {\r",
+                      "    pm.expect(jsonData.user.id).to.not.eql(\"\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Email should not be null\", function () {\r",
+                      "    pm.expect(jsonData.user.email).to.not.be.null;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Phone number should not be null\", function () {\r",
+                      "    pm.expect(jsonData.user.phone_number)\r",
+                      "        .to.not.be.null;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Message should not contain error\", function () {\r",
+                      "    pm.expect(jsonData.message.toLowerCase())\r",
+                      "        .to.not.include(\"error\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Status should not be 400\", function () {\r",
+                      "    pm.expect(pm.response.code).to.not.eql(400);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Status should not be 500\", function () {\r",
+                      "    pm.expect(pm.response.code).to.not.eql(500);\r",
+                      "});\r",
+                      "\r",
+                      "\r",
+                      "// Save variables for next APIs\r",
+                      "\r",
+                      "if(jsonData.user){\r",
+                      "\r",
+                      "    pm.collectionVariables.set(\r",
+                      "        \"customer2_Id\",\r",
+                      "        jsonData.user.id\r",
+                      "    );\r",
+                      "\r",
+                      "    pm.collectionVariables.set(\r",
+                      "        \"customer2_Email\",\r",
+                      "        jsonData.user.email\r",
+                      "    );\r",
+                      "\r",
+                      "    pm.collectionVariables.set(\r",
+                      "        \"customer2_PhoneNumber\",\r",
+                      "        jsonData.user.phone_number\r",
+                      "    );\r",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-AUTH-SECRET-KEY",
+                    "value": "{{secretKey}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Test Lamiash\",\r\n  \"email\": \"cust2{{randomId}}@gmail.com\",\r\n  \"password\": \"1234\",\r\n  \"phone_number\": \"{{phoneNumber2}}\",\r\n  \"nid\": \"{{randomId2}}\",\r\n  \"role\": \"Customer\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/user/create",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Merchant_Creation",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "var ramdomIdM = _.random( 1000000,9999990  );\r",
+                      "\r",
+                      "var phoneNumberM = \"0170\" + ramdomIdM;\r",
+                      "\r",
+                      "\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"randomIdM\" , ramdomIdM );\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"randomPhoneNumberM\" , phoneNumberM);\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Merchant Created Successfully\", function () {\r",
+                      "    pm.expect(jsonData.message)\r",
+                      "        .to.contains(\"User created\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Status code is 201\", function () {\r",
+                      "    pm.response.to.have.status(201);\r",
+                      "});\r",
+                      "\r",
+                      "var id = jsonData.user.id;\r",
+                      "var email = jsonData.user.email;\r",
+                      "var phoneNum = jsonData.user.phone_number;\r",
+                      "var role = jsonData.user.role;\r",
+                      "\r",
+                      "\r",
+                      "// Save Merchant variables\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"merchantId\", id);\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"merchantEmail\", email);\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"merchantPhoneNumber\", phoneNum);\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"merchantRole\", role);\r",
+                      "\r",
+                      "\r",
+                      "// Optional validation\r",
+                      "\r",
+                      "pm.test(\"Role is Merchant\", function () {\r",
+                      "    pm.expect(role).to.eql(\"Merchant\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-AUTH-SECRET-KEY",
+                    "value": "{{secretKey}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Tast Laxmi Merchant\",\r\n  \"email\": \"merchant{{randomIdM}}@gmail.com\",\r\n  \"password\": \"1234\",\r\n  \"phone_number\": \"{{randomPhoneNumberM}}\",\r\n  \"nid\": \"{{randomIdM}}\",\r\n  \"role\": \"Merchant\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/user/create",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Agent_Creation Copy",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "var ramdomIdA = _.random( 1000000,9999990  );\r",
+                      "\r",
+                      "var phoneNumberA = \"0170\" + ramdomIdA;\r",
+                      "\r",
+                      "\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"randomIdA\" , ramdomIdA );\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"randomPhoneNumberA\" , phoneNumberA);\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json()  ;\r",
+                      "\r",
+                      "\r",
+                      "pm.test( \"Agent Created Successfully\" , function(){\r",
+                      "\r",
+                      "    pm.expect( jsonData.message  ).to.contains(\"User created\")\r",
+                      "\r",
+                      "}    );\r",
+                      "\r",
+                      "\r",
+                      "pm.test( \"Status code is 201\" , function(){\r",
+                      "\r",
+                      "     pm.response.to.have.status(201);\r",
+                      "\r",
+                      "}   )\r",
+                      "\r",
+                      "\r",
+                      "var id = jsonData.user.id;\r",
+                      "var email = jsonData.user.email;\r",
+                      "var phoneNum = jsonData.user.phone_number;\r",
+                      "\r",
+                      "\r",
+                      "\r",
+                      "pm.collectionVariables.set( \"agentId2\" , id    );\r",
+                      "\r",
+                      "\r",
+                      "pm.collectionVariables.set( \"agentEmail\" , email    );\r",
+                      "\r",
+                      "\r",
+                      "pm.collectionVariables.set( \"agentPhoneNumber\" ,  phoneNum   );\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-AUTH-SECRET-KEY",
+                    "value": "{{secretKey}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Tast Laxmi Agent\",\r\n  \"email\": \"agent{{randomIdA}}@gmail.com\",\r\n  \"password\": \"1234\",\r\n  \"phone_number\": \"{{randomPhoneNumberA}}\",\r\n  \"nid\": \"{{randomIdA}}\",\r\n  \"role\": \"Agent\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8081/user/create",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "user",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Customer1",
+      "item": [
+        {
+          "name": "Activate Customer1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "// Positive Test Cases\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 2000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body is not empty\", function () {\r",
+                  "    pm.expect(pm.response.text()).not.to.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains success message\", function () {\r",
+                  "    pm.expect(jsonData.message.toLowerCase())\r",
+                  "        .to.include(\"success\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User status is active\", function () {\r",
+                  "    pm.expect(jsonData.user.status.toLowerCase())\r",
+                  "        .to.eql(\"active\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User object exists\", function () {\r",
+                  "    pm.expect(jsonData.user).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User id exists\", function () {\r",
+                  "    pm.expect(jsonData.user.id)\r",
+                  "        .to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    pm.expect(\r",
+                  "        pm.response.headers.get(\"Content-Type\")\r",
+                  "    ).to.include(\"application/json\");\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// Negative Test Cases\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 400\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 401\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 404\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 500\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(500);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response should not contain error\", function () {\r",
+                  "    pm.expect(\r",
+                  "        JSON.stringify(jsonData).toLowerCase()\r",
+                  "    ).to.not.include(\"error\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User status should not be inactive\", function () {\r",
+                  "    pm.expect(jsonData.user.status.toLowerCase())\r",
+                  "        .to.not.eql(\"inactive\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "ROADTOSDET",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"status\":\"active\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/update/{{customer1_Id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "update",
+                "{{customer1_Id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer2",
+      "item": [
+        {
+          "name": "Customer2_activate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "// Positive Test Cases\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 2000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body is not empty\", function () {\r",
+                  "    pm.expect(pm.response.text()).not.to.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains success message\", function () {\r",
+                  "    pm.expect(jsonData.message.toLowerCase())\r",
+                  "        .to.include(\"success\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User status is active\", function () {\r",
+                  "    pm.expect(jsonData.user.status.toLowerCase())\r",
+                  "        .to.eql(\"active\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User object exists\", function () {\r",
+                  "    pm.expect(jsonData.user).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User id exists\", function () {\r",
+                  "    pm.expect(jsonData.user.id)\r",
+                  "        .to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    pm.expect(\r",
+                  "        pm.response.headers.get(\"Content-Type\")\r",
+                  "    ).to.include(\"application/json\");\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// Negative Test Cases\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 400\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 401\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 404\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 500\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(500);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response should not contain error\", function () {\r",
+                  "    pm.expect(\r",
+                  "        JSON.stringify(jsonData).toLowerCase()\r",
+                  "    ).to.not.include(\"error\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User status should not be inactive\", function () {\r",
+                  "    pm.expect(jsonData.user.status.toLowerCase())\r",
+                  "        .to.not.eql(\"inactive\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "ROADTOSDET",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"status\":\"active\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/update/{{customer2_Id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "update",
+                "{{customer2_Id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Merchant",
+      "item": [
+        {
+          "name": "Merchant_login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var url = \"http://localhost:8081\";\r",
+                  "var key = \"ROADTOSDET\";\r",
+                  "\r",
+                  "pm.collectionVariables.set( \"baseUrl\" , url  );\r",
+                  "pm.collectionVariables.set(\"secretKey\" , key);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json()  ;\r",
+                  "\r",
+                  "pm.test( \"User can Login Successfully\" , function(){\r",
+                  "\r",
+                  "    pm.expect( jsonData.message  ).to.contains(\"Login successful\")\r",
+                  "\r",
+                  "}    );\r",
+                  "\r",
+                  "\r",
+                  "pm.test( \"Status code is 200\" , function(){\r",
+                  "\r",
+                  "     pm.response.to.have.status(200);\r",
+                  "\r",
+                  "}   )\r",
+                  "\r",
+                  "\r",
+                  "var token = jsonData.token;\r",
+                  "pm.collectionVariables.set( \"adminToken\" , token );"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"merchant_laxmi@gmail.com\",\r\n  \"password\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/user/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Merchant_activate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "// Positive Test Cases\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 2000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body is not empty\", function () {\r",
+                  "    pm.expect(pm.response.text()).not.to.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response contains success message\", function () {\r",
+                  "    pm.expect(jsonData.message.toLowerCase())\r",
+                  "        .to.include(\"success\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User status is active\", function () {\r",
+                  "    pm.expect(jsonData.user.status.toLowerCase())\r",
+                  "        .to.eql(\"active\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User object exists\", function () {\r",
+                  "    pm.expect(jsonData.user).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User id exists\", function () {\r",
+                  "    pm.expect(jsonData.user.id)\r",
+                  "        .to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    pm.expect(\r",
+                  "        pm.response.headers.get(\"Content-Type\")\r",
+                  "    ).to.include(\"application/json\");\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// Negative Test Cases\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 400\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 401\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 404\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code should not be 500\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.eql(500);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response should not contain error\", function () {\r",
+                  "    pm.expect(\r",
+                  "        JSON.stringify(jsonData).toLowerCase()\r",
+                  "    ).to.not.include(\"error\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User status should not be inactive\", function () {\r",
+                  "    pm.expect(jsonData.user.status.toLowerCase())\r",
+                  "        .to.not.eql(\"inactive\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "ROADTOSDET",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"status\":\"active\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/update/{{agentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "update",
+                "{{agentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Merchant_verify",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set( \"merchantToken\" , token );"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"identifier\":\"merchant_laxmi@gmail.com\",\r\n   \"otp\":\"{{otp}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/user/verify-otp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "user",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Agent",
+      "item": [
+        {
+          "name": "Agent Activate",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "ROADTOSDET",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"status\":\"active\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/user/update/{{agentId2}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "user",
+                "update",
+                "{{agentId2}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "System Login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"User can Login Successfully\", function(){",
+                  "    pm.expect(jsonData.message).to.contains(\"Login successful\");",
+                  "});",
+                  "",
+                  "pm.test(\"Status code is 200\", function(){",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var token = jsonData.token;",
+                  "pm.collectionVariables.set(\"systemToken\", token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"system@dmoney.com\",\r\n  \"password\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/user/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Agent_deposit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Positive Test Cases\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.test(\"Status code is 200 or 201\", function () {\r",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"System deposit successful message\", function () {\r",
+                  "    pm.expect(jsonData.message)\r",
+                  "        .to.eql(\"SYSTEM deposit to Agent successful\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction ID exists\", function () {\r",
+                  "    pm.expect(jsonData.trnxId).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Deposit amount is 5000\", function () {\r",
+                  "    pm.expect(jsonData.amount).to.eql(5000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Agent balance updated correctly\", function () {\r",
+                  "    pm.expect(jsonData.agentBalance).to.eql(5000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction ID format is valid\", function () {\r",
+                  "    pm.expect(jsonData.trnxId).to.match(/^TXN/);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Negative-style validations\r",
+                  "// (ensure no corruption in response)\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.test(\"Message should not contain error\", function () {\r",
+                  "    pm.expect(jsonData.message.toLowerCase()).to.not.include(\"error\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Amount should not be negative\", function () {\r",
+                  "    pm.expect(jsonData.amount).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Agent balance should not be null\", function () {\r",
+                  "    pm.expect(jsonData.agentBalance).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Save variables for next steps\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"systemDepositTrnxId\", jsonData.trnxId);\r",
+                  "pm.collectionVariables.set(\"agentBalanceAfterSystemDeposit\", jsonData.agentBalance);\r",
+                  "pm.collectionVariables.set(\"systemDepositAmount\", jsonData.amount);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{systemToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "ROADTOSDET ",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer{{systemToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"from_account\": \"SYSTEM\",\r\n  \"to_account\": \"{{randomPhoneNumberA}}\",\r\n  \"amount\": 5000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/transaction/deposit",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "transaction",
+                "deposit"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Agent to Customer Transaction",
+      "item": [
+        {
+          "name": "Agent login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var url = \"http://localhost:5000\";\r",
+                  "var key = \"ROADTOSDET\";\r",
+                  "\r",
+                  "pm.collectionVariables.set( \"baseUrl\" , url  );\r",
+                  "pm.collectionVariables.set(\"secretKey\" , key);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"User can Login Successfully\", function(){",
+                  "    pm.expect(jsonData.message).to.contains(\"Login successful\");",
+                  "});",
+                  "",
+                  "pm.test(\"Status code is 200\", function(){",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"agent_laxmi@gmail.com\",\r\n  \"password\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/user/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "gmail_list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "let latestEmailId = jsonData.messages[1].id;\r",
+                  "pm.collectionVariables.set(\"latestEmailId\", latestEmailId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{gmailToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages",
+              "protocol": "https",
+              "host": [
+                "gmail",
+                "googleapis",
+                "com"
+              ],
+              "path": [
+                "gmail",
+                "v1",
+                "users",
+                "me",
+                "messages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "read email Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let responseBody = pm.response.json();\r",
+                  "let snippet = responseBody.snippet;\r",
+                  "let otp = snippet.match(/is:\\s*(\\d{4})/)[1];\r",
+                  "pm.collectionVariables.set(\"otp\", otp);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{gmailToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages/{{latestEmailId}}",
+              "protocol": "https",
+              "host": [
+                "gmail",
+                "googleapis",
+                "com"
+              ],
+              "path": [
+                "gmail",
+                "v1",
+                "users",
+                "me",
+                "messages",
+                "{{latestEmailId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Agent_verify Copy 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set( \"agentToken\" , token );"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"identifier\":\"agent_laxmi@gmail.com\",\r\n   \"otp\":\"{{otp}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/user/verify-otp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "user",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Agent_to_Customer_transaction Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Positive Test Cases\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.test(\"Status code is 200 or 201\", function () {\r",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Deposit successful message\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Deposit successful\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction ID exists\", function () {\r",
+                  "    pm.expect(jsonData.trnxId).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Commission is valid number\", function () {\r",
+                  "    pm.expect(jsonData.commission).to.be.a(\"number\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Commission is non-negative\", function () {\r",
+                  "    pm.expect(jsonData.commission).to.be.at.least(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Current balance is updated\", function () {\r",
+                  "    pm.expect(jsonData.currentBalance).to.be.a(\"number\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction ID format valid\", function () {\r",
+                  "    pm.expect(jsonData.trnxId).to.match(/^TXN/);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Negative-style validations\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.test(\"Message should not contain error\", function () {\r",
+                  "    pm.expect(jsonData.message.toLowerCase()).to.not.include(\"error\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Commission should not be negative\", function () {\r",
+                  "    pm.expect(jsonData.commission).to.be.above(-1);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Balance should not be null\", function () {\r",
+                  "    pm.expect(jsonData.currentBalance).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Save variables for next API calls\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"agentToCustomerTrnxId\", jsonData.trnxId);\r",
+                  "pm.collectionVariables.set(\"agentCurrentBalance\", jsonData.currentBalance);\r",
+                  "pm.collectionVariables.set(\"lastCommission\", jsonData.commission);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "ROADTOSDET ",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{agentToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"from_account\": \"{{randomPhoneNumberA}}\",\r\n  \"to_account\": \"{{customer2_PhoneNumber}}\",\r\n  \"amount\": 2000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/transaction/deposit",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "transaction",
+                "deposit"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer to Customer transaction",
+      "item": [
+        {
+          "name": "Customer1_login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var url = \"http://localhost:5000\";\r",
+                  "var key = \"ROADTOSDET\";\r",
+                  "\r",
+                  "pm.collectionVariables.set( \"baseUrl\" , url  );\r",
+                  "pm.collectionVariables.set(\"secretKey\" , key);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json()  ;\r",
+                  "\r",
+                  "pm.test( \"User can Login Successfully\" , function(){\r",
+                  "\r",
+                  "    pm.expect( jsonData.message  ).to.contains(\"Login successful\")\r",
+                  "\r",
+                  "}    );\r",
+                  "\r",
+                  "\r",
+                  "pm.test( \"Status code is 200\" , function(){\r",
+                  "\r",
+                  "     pm.response.to.have.status(200);\r",
+                  "\r",
+                  "}   )\r",
+                  "\r",
+                  "\r",
+                  "var token = jsonData.token;\r",
+                  "pm.collectionVariables.set( \"adminToken\" , token );"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"rukaiyahaque1229@gmail.com\",\r\n  \"password\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/user/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "gmail_list Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "let latestEmailId = jsonData.messages[1].id;\r",
+                  "pm.collectionVariables.set(\"latestEmailId\", latestEmailId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{gmailToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages",
+              "protocol": "https",
+              "host": [
+                "gmail",
+                "googleapis",
+                "com"
+              ],
+              "path": [
+                "gmail",
+                "v1",
+                "users",
+                "me",
+                "messages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "read email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let responseBody = pm.response.json();\r",
+                  "let snippet = responseBody.snippet;\r",
+                  "let otp = snippet.match(/is:\\s*(\\d{4})/)[1];\r",
+                  "pm.collectionVariables.set(\"otp\", otp);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{gmailToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages/{{latestEmailId}}",
+              "protocol": "https",
+              "host": [
+                "gmail",
+                "googleapis",
+                "com"
+              ],
+              "path": [
+                "gmail",
+                "v1",
+                "users",
+                "me",
+                "messages",
+                "{{latestEmailId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cus1_verify",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "let token = jsonData.token;\r",
+                  "pm.collectionVariables.set( \"cus1Token\" , token );"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"identifier\":\"{{customer1_Email}}\",\r\n   \"otp\":\"{{otp}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/user/verify-otp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "user",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer_to_Customer_transaction",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Positive Test Cases\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.test(\"Status code is 200 or 201\", function () {\r",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Send money successful message\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Send money successful\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction ID exists\", function () {\r",
+                  "    pm.expect(jsonData.trnxId).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Fee is valid number\", function () {\r",
+                  "    pm.expect(jsonData.fee).to.be.a(\"number\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Fee is non-negative\", function () {\r",
+                  "    pm.expect(jsonData.fee).to.be.at.least(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Current balance is updated\", function () {\r",
+                  "    pm.expect(jsonData.currentBalance).to.be.a(\"number\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction ID format valid\", function () {\r",
+                  "    pm.expect(jsonData.trnxId).to.match(/^TXN/);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Message does not contain error\", function () {\r",
+                  "    pm.expect(jsonData.message.toLowerCase()).to.not.include(\"error\");\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Business Logic Check\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.test(\"Fee should be 5 for send money\", function () {\r",
+                  "    pm.expect(jsonData.fee).to.eql(5);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Balance should not be negative\", function () {\r",
+                  "    pm.expect(jsonData.currentBalance).to.be.at.least(0);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Save variables for next API (Cashout step)\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"c2cTrnxId\", jsonData.trnxId);\r",
+                  "pm.collectionVariables.set(\"customerCurrentBalance\", jsonData.currentBalance);\r",
+                  "pm.collectionVariables.set(\"sendMoneyFee\", jsonData.fee);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "ROADTOSDET ",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cus1Token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"from_account\": \"{{customer1_PhoneNumber}}\",\r\n  \"to_account\": \"{{customer2_PhoneNumber}}\",\r\n  \"amount\": 1000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/transaction/sendmoney",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "transaction",
+                "sendmoney"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer Cashout from Agent",
+      "item": [
+        {
+          "name": "Customer2_login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var url = \"http://localhost:5000\";\r",
+                  "var key = \"ROADTOSDET\";\r",
+                  "\r",
+                  "pm.collectionVariables.set( \"baseUrl\" , url  );\r",
+                  "pm.collectionVariables.set(\"secretKey\" , key);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json()  ;\r",
+                  "\r",
+                  "pm.test( \"User can Login Successfully\" , function(){\r",
+                  "\r",
+                  "    pm.expect( jsonData.message  ).to.contains(\"Login successful\")\r",
+                  "\r",
+                  "}    );\r",
+                  "\r",
+                  "\r",
+                  "pm.test( \"Status code is 200\" , function(){\r",
+                  "\r",
+                  "     pm.response.to.have.status(200);\r",
+                  "\r",
+                  "}   )\r",
+                  "\r",
+                  "\r",
+                  "var token = jsonData.token;\r",
+                  "pm.collectionVariables.set( \"adminToken\" , token );"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{cus2_email}}\",\r\n  \"password\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/user/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "gmail_list Copy 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "let latestEmailId = jsonData.messages[0].id;\r",
+                  "pm.collectionVariables.set(\"latestEmailId\", latestEmailId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{gmailToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages",
+              "protocol": "https",
+              "host": [
+                "gmail",
+                "googleapis",
+                "com"
+              ],
+              "path": [
+                "gmail",
+                "v1",
+                "users",
+                "me",
+                "messages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "read email Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let responseBody = pm.response.json();\r",
+                  "let snippet = responseBody.snippet;\r",
+                  "let otp = snippet.match(/is:\\s*(\\d{4})/)[1];\r",
+                  "pm.collectionVariables.set(\"otp\", otp);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{gmailToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages/{{latestEmailId}}",
+              "protocol": "https",
+              "host": [
+                "gmail",
+                "googleapis",
+                "com"
+              ],
+              "path": [
+                "gmail",
+                "v1",
+                "users",
+                "me",
+                "messages",
+                "{{latestEmailId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cus2_verify",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "let token = jsonData.token;\r",
+                  "pm.collectionVariables.set( \"cus2Token\" , token );"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"identifier\":\"{{cus2_email}}\",\r\n   \"otp\":\"{{otp}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/user/verify-otp",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "user",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer_CashOut",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Positive Test Cases\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.test(\"Status code is 200 or 201\", function () {\r",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Withdraw successful message\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Withdraw successful\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction ID exists\", function () {\r",
+                  "    pm.expect(jsonData.trnxId).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Fee is valid number\", function () {\r",
+                  "    pm.expect(jsonData.fee).to.be.a(\"number\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Fee is non-negative\", function () {\r",
+                  "    pm.expect(jsonData.fee).to.be.at.least(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Current balance is valid number\", function () {\r",
+                  "    pm.expect(jsonData.currentBalance).to.be.a(\"number\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction ID format valid\", function () {\r",
+                  "    pm.expect(jsonData.trnxId).to.match(/^TXN/);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Message should not contain error\", function () {\r",
+                  "    pm.expect(jsonData.message.toLowerCase()).to.not.include(\"error\");\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Business Logic Tests\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.test(\"Cashout fee should be 5\", function () {\r",
+                  "    pm.expect(jsonData.fee).to.eql(5);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Balance should not be negative\", function () {\r",
+                  "    pm.expect(jsonData.currentBalance).to.be.at.least(0);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// =====================\r",
+                  "// Save variables for next reporting / validation\r",
+                  "// =====================\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"cashoutTrnxId\", jsonData.trnxId);\r",
+                  "pm.collectionVariables.set(\"cashoutFee\", jsonData.fee);\r",
+                  "pm.collectionVariables.set(\"customerBalanceAfterCashout\", jsonData.currentBalance);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "ROADTOSDET ",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cus2_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"from_account\": \"{{customer2_PhoneNumber}}\",\r\n  \"to_account\": \"{{randomPhoneNumberA}}\",\r\n  \"amount\": 500\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/transaction/withdraw",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "transaction",
+                "withdraw"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081"
+    },
+    {
+      "key": "secretKey",
+      "value": "ROADTOSDET"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "randomId",
+      "value": "210911"
+    },
+    {
+      "key": "randomPhoneNumber",
+      "value": "01701210911"
+    },
+    {
+      "key": "agentId",
+      "value": 36
+    },
+    {
+      "key": "agentEmail",
+      "value": "agent_laxmi@gmail.com"
+    },
+    {
+      "key": "agentPhoneNumber",
+      "value": "01705001272"
+    },
+    {
+      "key": "customer1_Id",
+      "value": "33"
+    },
+    {
+      "key": "customer1_Email",
+      "value": "cust12000@gmail.com"
+    },
+    {
+      "key": "customer1_PhoneNumber",
+      "value": "01608315818"
+    },
+    {
+      "key": "cus2_email",
+      "value": "rukaiyahaque1229@gmail.com"
+    },
+    {
+      "key": "randomId2",
+      "value": "5976586"
+    },
+    {
+      "key": "randomPhoneNumber2",
+      "value": "01509178584"
+    },
+    {
+      "key": "phoneNumber2",
+      "value": "01505976586"
+    },
+    {
+      "key": "customer2_Id",
+      "value": "34"
+    },
+    {
+      "key": "customer2_Email",
+      "value": "customer1399@gmail.com"
+    },
+    {
+      "key": "customer2_PhoneNumber",
+      "value": "01505976586"
+    },
+    {
+      "key": "cus2_token",
+      "value": ""
+    },
+    {
+      "key": "randomIdM",
+      "value": "2119794"
+    },
+    {
+      "key": "randomPhoneNumberM",
+      "value": "01702119794"
+    },
+    {
+      "key": "merchant_token",
+      "value": ""
+    },
+    {
+      "key": "randomIdA",
+      "value": 5001272
+    },
+    {
+      "key": "randomPhoneNumberA",
+      "value": "01705001272"
+    },
+    {
+      "key": "systemDepositTrnxId",
+      "value": "TXNBXHKMQOOGX"
+    },
+    {
+      "key": "agentBalanceAfterSystemDeposit",
+      "value": 10000
+    },
+    {
+      "key": "systemDepositAmount",
+      "value": 5000
+    },
+    {
+      "key": "agentToCustomerTrnxId",
+      "value": "TXNEIP5K2NI1Z"
+    },
+    {
+      "key": "agentCurrentBalance",
+      "value": 6100
+    },
+    {
+      "key": "lastCommission",
+      "value": 50
+    },
+    {
+      "key": "c2cTrnxId",
+      "value": "TXNVG9E5SIJQO"
+    },
+    {
+      "key": "customerCurrentBalance",
+      "value": 1990
+    },
+    {
+      "key": "sendMoneyFee",
+      "value": 5
+    },
+    {
+      "key": "cashoutTrnxId",
+      "value": "TXNO3XY6NYUQM"
+    },
+    {
+      "key": "cashoutFee",
+      "value": 5
+    },
+    {
+      "key": "customerBalanceAfterCashout",
+      "value": 980
+    },
+    {
+      "key": "gmailToken",
+      "value": ""
+    },
+    {
+      "key": "latestEmailId",
+      "value": ""
+    },
+    {
+      "key": "otp",
+      "value": ""
+    },
+    {
+      "key": "systemToken",
+      "value": ""
+    },
+    {
+      "key": "agentToken",
+      "value": ""
+    },
+    {
+      "key": "cus1Token",
+      "value": ""
+    },
+    {
+      "key": "cus2Token",
+      "value": ""
+    },
+    {
+      "key": "agentId2",
+      "value": ""
+    }
+  ]
+}
