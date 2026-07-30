@@ -244,13 +244,4 @@ Thumbs.db
 ---
 
 ## Author
-
-**Your Name**  
-Batch: B18  
-GitHub: [@your-username](https://github.com/your-username)
-
----
-
-## License
-
-This project is for educational purposes as part of the SDET course at Road to Career.
+Rukaiya Haque 
